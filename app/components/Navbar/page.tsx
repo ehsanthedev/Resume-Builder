@@ -41,7 +41,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/pages" className="flex items-center">
+            <Link href="/" className="flex items-center">
               <Image 
                 src="/cv-logo.jpg"
                 alt="CV Craft Logo"
