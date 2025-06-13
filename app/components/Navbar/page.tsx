@@ -10,7 +10,7 @@ const Navbar = () => {
 
   // Navigation items using arrays
   const primaryNavItems = [
-    { name: "Home", href: "/pages" },
+    { name: "Home", href: "/" },
     { name: "Templates", href: "/pages/Templates" },
     { name: "Builder", href: "/pages/Builder" },
     { name: "Examples", href: "/pages/Example" },
@@ -41,7 +41,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/pages" className="flex items-center">
+            <Link href="/" className="flex items-center">
               <Image 
                 src="/cv-logo.jpg"
                 alt="CV Craft Logo"
