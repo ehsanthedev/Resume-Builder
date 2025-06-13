@@ -4,7 +4,6 @@ import "./globals.css";
 import Link from "next/link";
 import Image from "next/image";
 import Navbar from "./components/Navbar/page";
-import LandingPage from "./pages/page";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,7 +29,6 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased pt-16 md:pt-20`}>   
         <Navbar/>
-        {/* <LandingPage/> */}
         {children}
       </body>
     </html>
