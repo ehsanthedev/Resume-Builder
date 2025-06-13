@@ -1,7 +1,7 @@
 "use client"
 
 import Head from 'next/head';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion'; // Import Variants type
 
 // Define TypeScript interfaces
 interface TeamMember {
@@ -85,7 +85,7 @@ export default function AboutPage() {
   ];
 
   // Animation variants
-  const fadeIn = {
+  const fadeIn: Variants = {
     hidden: { opacity: 0, y: 50 },
     visible: { 
       opacity: 1, 
@@ -94,7 +94,7 @@ export default function AboutPage() {
     }
   };
 
-  const staggerContainer = {
+  const staggerContainer: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -104,12 +104,16 @@ export default function AboutPage() {
     }
   };
 
-  const cardAnimation = {
+  const cardAnimation: Variants = {
     hidden: { opacity: 0, scale: 0.9 },
     visible: { 
       opacity: 1, 
       scale: 1,
-      transition: { duration: 0.4, ease: "easeOut" }
+      transition: { 
+        type: "spring", // Use string literal
+        duration: 0.4, 
+        ease: "easeOut" 
+      }
     }
   };
 

@@ -1,7 +1,7 @@
 // pages/index.tsx
 "use client"
 import { useState, useRef } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 // Define TypeScript interfaces
 interface PersonalInfo {
@@ -35,25 +35,25 @@ interface Skill {
 }
 
 // Animation variants
-const fadeIn = {
+const fadeIn: Variants = {
   hidden: { opacity: 0, y: 20 },
   visible: { 
     opacity: 1, 
     y: 0,
-    transition: { duration: 0.4, ease: "easeOut" }
+    transition: { duration: 0.4, ease: "easeOut" as const }
   }
 };
 
-const slideIn = {
+const slideIn: Variants = {
   hidden: { opacity: 0, x: 50 },
   visible: { 
     opacity: 1, 
     x: 0,
-    transition: { duration: 0.5, ease: "easeOut" }
+    transition: { duration: 0.5, ease: "easeOut" as const }
   }
 };
 
-const popIn = {
+const popIn: Variants = {
   hidden: { scale: 0.8, opacity: 0 },
   visible: { 
     scale: 1, 
@@ -62,12 +62,13 @@ const popIn = {
       type: "spring", 
       stiffness: 300, 
       damping: 20,
-      duration: 0.4
+      duration: 0.4,
+      ease: "easeOut" as const // Even though spring is used, ease is still needed
     }
   }
 };
 
-const itemAnimation = {
+const itemAnimation: Variants = {
   hidden: { opacity: 0, height: 0 },
   visible: (i: number) => ({
     opacity: 1,
@@ -75,13 +76,16 @@ const itemAnimation = {
     transition: {
       delay: i * 0.1,
       duration: 0.3,
-      ease: "easeOut"
+      ease: "easeOut" as const, // Add "as const" here
     }
   }),
   exit: { 
     opacity: 0, 
     height: 0,
-    transition: { duration: 0.2 }
+    transition: { 
+      duration: 0.2,
+      ease: "easeOut" as const, // Also add to exit transition
+    }
   }
 };
 

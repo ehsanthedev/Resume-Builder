@@ -7,7 +7,7 @@ import {
   FaLanguage, FaPalette, FaEye, FaFilePdf, 
   FaSave, FaPlus, FaTrash, FaDownload, FaSpinner
 } from 'react-icons/fa';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion'; // Import Variants type
 
 // Define TypeScript interfaces
 interface PersonalInfo {
@@ -55,65 +55,65 @@ interface Language {
 }
 
 // Animation variants
-const fadeIn = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { 
-    opacity: 1, 
-    y: 0,
-    transition: { duration: 0.4, ease: "easeOut" }
-  },
-  exit: { 
-    opacity: 0, 
-    y: -20,
-    transition: { duration: 0.3, ease: "easeIn" }
-  }
-};
-
-const slideIn = {
-  hidden: { opacity: 0, x: 50 },
-  visible: { 
-    opacity: 1, 
-    x: 0,
-    transition: { duration: 0.5, ease: "easeOut" }
-  }
-};
-
-const popIn = {
-  hidden: { scale: 0.8, opacity: 0 },
-  visible: { 
-    scale: 1, 
-    opacity: 1,
-    transition: { 
-      type: "spring", 
-      stiffness: 300, 
-      damping: 20,
-      duration: 0.4
+const fadeIn: Variants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
+    },
+    exit: { 
+      opacity: 0, 
+      y: -20,
+      transition: { duration: 0.3, ease: "easeIn" }
     }
-  },
-  exit: { 
-    scale: 0.8, 
-    opacity: 0,
-    transition: { duration: 0.2 }
-  }
-};
+  };
 
-const itemAnimation = {
-  hidden: { opacity: 0, height: 0 },
-  visible: (i: number) => ({
-    opacity: 1,
-    height: "auto",
-    transition: {
-      delay: i * 0.1,
-      duration: 0.3,
-      ease: "easeOut"
+  const slideIn: Variants = {
+    hidden: { opacity: 0, x: 50 },
+    visible: { 
+      opacity: 1, 
+      x: 0,
+      transition: { duration: 0.5, ease: "easeOut" }
     }
-  }),
-  exit: { 
-    opacity: 0, 
-    height: 0,
-    transition: { duration: 0.2 }
-  }
-};
+  };
+
+  const popIn: Variants = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: { 
+      scale: 1, 
+      opacity: 1,
+      transition: { 
+        type: "spring", // Use string literal
+        stiffness: 300, 
+        damping: 20,
+        duration: 0.4
+      }
+    },
+    exit: { 
+      scale: 0.8, 
+      opacity: 0,
+      transition: { duration: 0.2 }
+    }
+  };
+
+  const itemAnimation: Variants = {
+    hidden: { opacity: 0, height: 0 },
+    visible: (i: number) => ({
+      opacity: 1,
+      height: "auto",
+      transition: {
+        delay: i * 0.1,
+        duration: 0.3,
+        ease: "easeOut"
+      }
+    }),
+    exit: { 
+      opacity: 0, 
+      height: 0,
+      transition: { duration: 0.2 }
+    }
+  };
 
 export default function CVBuilder() {
   // State for form sections
@@ -336,7 +336,7 @@ export default function CVBuilder() {
         logging: false,
         useCORS: true,
         backgroundColor: '#ffffff',
-      });
+      } as any );
       
       document.body.removeChild(previewClone);
       
@@ -866,7 +866,7 @@ export default function CVBuilder() {
                             value={personalInfo.summary}
                             onChange={handlePersonalChange}
                             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                            rows="4"
+                            rows={4}
                             placeholder="Experienced professional with 5+ years in software development specializing in web technologies..."
                           />
                         </div>
@@ -983,7 +983,7 @@ export default function CVBuilder() {
                                   value={exp.description}
                                   onChange={(e) => handleWorkChange(exp.id, e)}
                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                  rows="3"
+                                  rows={3}
                                   placeholder="Describe your responsibilities, achievements, and technologies used..."
                                 />
                               </div>
@@ -1098,7 +1098,7 @@ export default function CVBuilder() {
                                   value={edu.description}
                                   onChange={(e) => handleEducationChange(edu.id, e)}
                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                                  rows="3"
+                                  rows={3}
                                   placeholder="Relevant coursework, achievements, projects, etc."
                                 />
                               </div>

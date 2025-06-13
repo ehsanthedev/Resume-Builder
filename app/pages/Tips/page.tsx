@@ -1,7 +1,7 @@
 "use client"
 import { useState } from 'react';
 import Head from 'next/head';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 // Define TypeScript interfaces
 interface Category {
@@ -103,14 +103,14 @@ export default function TipsAndGuides() {
   });
 
   // Animation variants
-  const fadeIn = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
-  };
+  const fadeIn: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { 
+    opacity: 1, 
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" as const }
+  }
+};
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -122,14 +122,17 @@ export default function TipsAndGuides() {
     }
   };
 
-  const cardAnimation = {
-    hidden: { opacity: 0, scale: 0.95 },
-    visible: { 
-      opacity: 1, 
-      scale: 1,
-      transition: { duration: 0.3, ease: "easeOut" }
+  const cardAnimation: Variants = {
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { 
+    opacity: 1, 
+    scale: 1,
+    transition: { 
+      duration: 0.3, 
+      ease: "easeOut" as const  // Add 'as const' here
     }
-  };
+  }
+};
 
   const categoryAnimation = {
     hidden: { opacity: 0, x: -10 },

@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 
 // Template data
 const allTemplates = [
@@ -160,9 +160,19 @@ const fadeIn = {
   show: { opacity: 1, transition: { duration: 0.6 } }
 };
 
-const popIn = {
-  hidden: { opacity: 0, scale: 0.8 },
-  show: { opacity: 1, scale: 1, transition: { type: "spring", damping: 12 } }
+const popIn: Variants = {
+  hidden: { scale: 0.8, opacity: 0 },
+  visible: { 
+    scale: 1, 
+    opacity: 1,
+    transition: { 
+      type: "spring", 
+      stiffness: 300, 
+      damping: 20,
+      duration: 0.4,
+      ease: "easeOut" as const // Even though spring is used, ease is still needed
+    }
+  }
 };
 
 const slideUp = {

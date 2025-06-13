@@ -2,7 +2,8 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, Variants } from 'framer-motion'; // Import Variants type
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>('');
@@ -41,7 +42,7 @@ export default function LoginPage() {
   };
 
   // Animation variants
-  const containerVariants = {
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { 
       opacity: 1,
@@ -52,12 +53,16 @@ export default function LoginPage() {
     }
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: { y: 20, opacity: 0 },
     visible: { 
       y: 0, 
       opacity: 1,
-      transition: { type: "spring", stiffness: 300, damping: 24 }
+      transition: { 
+        type: "spring",  // Use string literal
+        stiffness: 300, 
+        damping: 24 
+      }
     }
   };
 
