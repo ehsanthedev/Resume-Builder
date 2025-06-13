@@ -41,7 +41,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <Link href="/" className="flex items-center">
+            <Link href="/pages" className="flex items-center">
               <Image 
                 src="/cv-logo.jpg"
                 alt="CV Craft Logo"
@@ -126,18 +126,11 @@ const Navbar = () => {
           ))}
           <div className="pt-4 border-t border-gray-200">
             <Link
-              href="/login"
+              href="/pages/Login"
               className="block w-full text-center px-4 py-2 mb-2 text-blue-600 font-medium rounded-lg hover:bg-blue-50"
               onClick={() => setIsMenuOpen(false)}
             >
               Login
-            </Link>
-            <Link
-              href="/signup"
-              className="block w-full text-center px-4 py-2 text-white font-medium bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg hover:opacity-90"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Sign Up
             </Link>
           </div>
         </div>
