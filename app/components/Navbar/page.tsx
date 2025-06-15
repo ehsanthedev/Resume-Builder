@@ -43,7 +43,7 @@ const Navbar = () => {
           <div className="flex-shrink-0">
             <Link href="/" className="flex items-center">
               <Image 
-                src="/cv-logo.jpg"
+                src="/cv-logo.png"
                 alt="CV Craft Logo"
                 width={140}
                 height={40}
