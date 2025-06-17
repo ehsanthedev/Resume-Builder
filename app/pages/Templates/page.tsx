@@ -1,144 +1,10 @@
-// app/templates/page.js
+// app/templates/page.tsx
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
-
-// Template data
-const allTemplates = [
-  {
-    id: 1,
-    name: 'Modern Professional',
-    category: 'Professional',
-    description: 'Clean layout perfect for corporate roles',
-    popularity: 95,
-    image: '/templates/modern-professional.jpg'
-  },
-  {
-    id: 2,
-    name: 'Creative Portfolio',
-    category: 'Creative',
-    description: 'For designers and creative professionals',
-    popularity: 87,
-    image: '/templates/creative-portfolio.jpg'
-  },
-  {
-    id: 3,
-    name: 'Executive Blue',
-    category: 'Executive',
-    description: 'Sophisticated design for senior roles',
-    popularity: 92,
-    image: '/templates/executive-blue.jpg'
-  },
-  {
-    id: 4,
-    name: 'Tech Minimal',
-    category: 'Minimalist',
-    description: 'Optimized for tech and engineering roles',
-    popularity: 89,
-    image: '/templates/tech-minimal.jpg'
-  },
-  {
-    id: 5,
-    name: 'Fresh Graduate',
-    category: 'Student',
-    description: 'Perfect for students and entry-level candidates',
-    popularity: 85,
-    image: '/templates/fresh-graduate.jpg'
-  },
-  {
-    id: 6,
-    name: 'Corporate Classic',
-    category: 'Professional',
-    description: 'Timeless design for all industries',
-    popularity: 90,
-    image: '/templates/corporate-classic.jpg'
-  },
-  {
-    id: 7,
-    name: 'Artistic Flair',
-    category: 'Creative',
-    description: 'Showcase your creative personality',
-    popularity: 82,
-    image: '/templates/artistic-flair.jpg'
-  },
-  {
-    id: 8,
-    name: 'Simple Elegance',
-    category: 'Minimalist',
-    description: 'Understated yet professional',
-    popularity: 88,
-    image: '/templates/simple-elegance.jpg'
-  },
-  {
-    id: 9,
-    name: 'Senior Executive',
-    category: 'Executive',
-    description: 'For C-level and director positions',
-    popularity: 91,
-    image: '/templates/senior-executive.jpg'
-  },
-  {
-    id: 10,
-    name: 'Academic Scholar',
-    category: 'Student',
-    description: 'Ideal for research and academic positions',
-    popularity: 84,
-    image: '/templates/academic-scholar.jpg'
-  },
-  {
-    id: 11,
-    name: 'Business Pro',
-    category: 'Professional',
-    description: 'For finance, consulting, and business roles',
-    popularity: 93,
-    image: '/templates/business-pro.jpg'
-  },
-  {
-    id: 12,
-    name: 'Design Vision',
-    category: 'Creative',
-    description: 'Showcases design sensibilities',
-    popularity: 86,
-    image: '/templates/design-vision.jpg'
-  },
-  {
-    id: 13,
-    name: 'Clean Lines',
-    category: 'Minimalist',
-    description: 'Ultra-modern minimalist approach',
-    popularity: 87,
-    image: '/templates/clean-lines.jpg'
-  },
-  {
-    id: 14,
-    name: 'Leadership',
-    category: 'Executive',
-    description: 'For managers and team leaders',
-    popularity: 89,
-    image: '/templates/leadership.jpg'
-  },
-  {
-    id: 15,
-    name: 'Intern Ready',
-    category: 'Student',
-    description: 'Designed specifically for internships',
-    popularity: 83,
-    image: '/templates/intern-ready.jpg'
-  }
-];
-
-const categories = [
-  { id: 'all', name: 'All Templates' },
-  { id: 'Professional', name: 'Professional' },
-  { id: 'Creative', name: 'Creative' },
-  { id: 'Minimalist', name: 'Minimalist' },
-  { id: 'Executive', name: 'Executive' },
-  { id: 'Student', name: 'Student' },
-];
-
+import { motion, AnimatePresence, Variants } from 'framer-motion'; // Import Variants here
+import TemplateCard from './templateCard';
+import { allTemplates, categories } from './templatesData';
 // Animation variants
 const container = {
   hidden: { opacity: 0 },
@@ -170,7 +36,13 @@ const popIn: Variants = {
       stiffness: 300, 
       damping: 20,
       duration: 0.4,
-      ease: "easeOut" as const // Even though spring is used, ease is still needed
+    }
+  },
+  exit: { 
+    scale: 0.8, 
+    opacity: 0,
+    transition: { 
+      duration: 0.3 
     }
   }
 };
@@ -196,16 +68,10 @@ export default function TemplatesPage() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16 relative overflow-hidden">
-        {/* Animated background elements */}
-        <motion.div 
-          className="absolute top-0 left-0 w-full h-full"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.1 }}
-          transition={{ duration: 1 }}
-        >
-          <div className="absolute top-20 left-1/4 w-64 h-64 rounded-full bg-blue-500 blur-3xl"></div>
-          <div className="absolute bottom-10 right-1/3 w-80 h-80 rounded-full bg-indigo-500 blur-3xl"></div>
-        </motion.div>
+        <div className="absolute top-0 left-0 w-full h-full">
+          <div className="absolute top-20 left-1/4 w-64 h-64 rounded-full bg-blue-500 blur-3xl opacity-20"></div>
+          <div className="absolute bottom-10 right-1/3 w-80 h-80 rounded-full bg-indigo-500 blur-3xl opacity-20"></div>
+        </div>
         
         <div className="container mx-auto px-6 relative z-10">
           <motion.h1 
@@ -214,7 +80,7 @@ export default function TemplatesPage() {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.7 }}
           >
-            CV Templates
+            Professional CV Templates
           </motion.h1>
           <motion.p 
             className="text-xl md:text-2xl max-w-3xl"
@@ -259,15 +125,13 @@ export default function TemplatesPage() {
           <motion.div 
             className="mb-8"
             initial="hidden"
-            animate="show"
+            animate="visible"
+            exit={"exit"}
             variants={popIn}
             transition={{ delay: 0.3 }}
           >
             <div className="relative max-w-md">
-              <motion.div
-                whileFocus={{ boxShadow: "0 0 0 2px #3b82f6" }}
-                className="flex items-center"
-              >
+              <div className="flex items-center">
                 <div className="absolute left-3 top-2.5 text-gray-400">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -282,7 +146,7 @@ export default function TemplatesPage() {
                   whileHover={{ boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)" }}
                   transition={{ type: "spring", stiffness: 400, damping: 20 }}
                 />
-              </motion.div>
+              </div>
             </div>
           </motion.div>
 
@@ -307,92 +171,14 @@ export default function TemplatesPage() {
                 animate="show"
               >
                 {filteredTemplates.map((template) => (
-                  <motion.div 
-                    key={template.id}
-                    className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300"
-                    variants={item}
-                    whileHover={{ 
-                      y: -10,
-                      boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
-                    }}
-                    layout
-                  >
-                    <div className="relative h-64 bg-gray-100 overflow-hidden">
-                      <motion.div 
-                        className="absolute inset-0"
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <div className="bg-gray-200 border-2 border-dashed rounded-xl w-full h-full" />
-                      </motion.div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
-                        <div>
-                          <motion.h3 
-                            className="text-white text-xl font-semibold"
-                            whileHover={{ x: 5 }}
-                          >
-                            {template.name}
-                          </motion.h3>
-                          <div className="flex items-center mt-1">
-                            <div className="flex">
-                              {[...Array(5)].map((_, i) => (
-                                <motion.svg
-                                  key={i}
-                                  className={`w-4 h-4 ${i < Math.floor(template.popularity / 20) ? 'text-yellow-400' : 'text-gray-300'}`}
-                                  fill="currentColor"
-                                  viewBox="0 0 20 20"
-                                  whileHover={{ scale: 1.2 }}
-                                  transition={{ type: "spring", stiffness: 300 }}
-                                >
-                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                </motion.svg>
-                              ))}
-                            </div>
-                            <motion.span 
-                              className="text-white text-sm ml-1"
-                              whileHover={{ scale: 1.1 }}
-                            >
-                              {template.popularity}%
-                            </motion.span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="p-4">
-                      <p className="text-gray-600 mb-4">{template.description}</p>
-                      <div className="flex justify-between items-center">
-                        <motion.span 
-                          className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
-                          whileHover={{ scale: 1.05 }}
-                        >
-                          {template.category}
-                        </motion.span>
-                        <Link href={`/builder?template=${template.id}`}>
-                          <motion.div
-                            className="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center"
-                            whileHover={{ x: 5 }}
-                            whileTap={{ scale: 0.95 }}
-                          >
-                            Use Template 
-                            <motion.span 
-                              className="ml-1"
-                              animate={{ x: [0, 5, 0] }}
-                              transition={{ repeat: Infinity, duration: 1.5 }}
-                            >
-                              →
-                            </motion.span>
-                          </motion.div>
-                        </Link>
-                      </div>
-                    </div>
-                  </motion.div>
+                  <TemplateCard key={template.id} template={template} />
                 ))}
               </motion.div>
             ) : (
               <motion.div 
                 className="text-center py-12"
                 initial="hidden"
-                animate="show"
+                animate="visible"
                 variants={popIn}
                 exit="hidden"
                 key="no-results"

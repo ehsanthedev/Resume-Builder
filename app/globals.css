@@ -24,3 +24,41 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 } */
+
+
+/* Add to your global CSS */
+.cv-preview {
+  transform: scale(0.3);
+  transform-origin: top left;
+  width: 333%;
+  height: 333%;
+  pointer-events: none;
+}
+
+.cv-preview p,
+.cv-preview li {
+  line-height: 1.2;
+}
+
+.cv-preview h2 {
+  font-size: 1.5rem;
+}
+/* Add to your global CSS */
+.cv-preview {
+  transform: scale(0.32);
+  transform-origin: top left;
+  width: 312%;
+  height: 312%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cv-preview p {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.cv-preview h2 {
+  font-size: 0.9rem;
+  margin: 0;
+}
