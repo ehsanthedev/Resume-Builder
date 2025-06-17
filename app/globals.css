@@ -62,3 +62,37 @@ body {
   font-size: 0.9rem;
   margin: 0;
 }
+
+
+/* Add to your global CSS */
+.cv-preview {
+  transform: scale(0.32);
+  transform-origin: top left;
+  width: 312%;
+  height: 312%;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.cv-preview p {
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Modal-specific styles */
+.modal-cv .cv-preview {
+  transform: scale(1);
+  width: 100%;
+  height: auto;
+  pointer-events: auto;
+}
+
+.modal-cv .cv-preview p,
+.modal-cv .cv-preview li {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.modal-cv .cv-preview h2 {
+  font-size: 1.5rem;
+}

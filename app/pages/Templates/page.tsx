@@ -2,10 +2,13 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion'; // Import Variants here
+import { motion, AnimatePresence, Variants } from 'framer-motion';
 import TemplateCard from './templateCard';
 import { allTemplates, categories } from './templatesData';
-// Animation variants
+import PreviewModal from '../../components/PreviewModal';
+import { Template } from './templates.interface';
+
+// Animation variants (same as before)
 const container = {
   hidden: { opacity: 0 },
   show: {
@@ -27,7 +30,10 @@ const fadeIn = {
 };
 
 const popIn: Variants = {
-  hidden: { scale: 0.8, opacity: 0 },
+  hidden: { 
+    scale: 0.8, 
+    opacity: 0 
+  },
   visible: { 
     scale: 1, 
     opacity: 1,
@@ -53,8 +59,12 @@ const slideUp = {
 };
 
 export default function TemplatesPage() {
+  // State for filters
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // State for preview modal
+  const [previewTemplate, setPreviewTemplate] = useState<Template | null>(null);
 
   // Filter templates based on selected category and search query
   const filteredTemplates = allTemplates.filter(template => {
@@ -66,6 +76,16 @@ export default function TemplatesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Preview Modal */}
+      <AnimatePresence>
+        {previewTemplate && (
+          <PreviewModal 
+            template={previewTemplate} 
+            onClose={() => setPreviewTemplate(null)} 
+          />
+        )}
+      </AnimatePresence>
+
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-indigo-700 text-white py-16 relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-full">
@@ -171,7 +191,11 @@ export default function TemplatesPage() {
                 animate="show"
               >
                 {filteredTemplates.map((template) => (
-                  <TemplateCard key={template.id} template={template} />
+                  <TemplateCard 
+                    key={template.id} 
+                    template={template} 
+                    onPreview={() => setPreviewTemplate(template)}
+                  />
                 ))}
               </motion.div>
             ) : (

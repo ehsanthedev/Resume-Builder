@@ -3,7 +3,6 @@
 
 import { motion } from 'framer-motion';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Template } from './templates.interface';
 import { 
   ProfessionalCV1, ProfessionalCV2, ProfessionalCV3,
@@ -12,8 +11,9 @@ import {
   ExecutiveCV1, ExecutiveCV2, ExecutiveCV3,
   StudentCV1, StudentCV2, StudentCV3
 } from '../../components/CVPreview';
+import { useState } from 'react';
 
-// Map template IDs to CV components
+// Map template IDs to their corresponding CV components
 const CVComponents: Record<number, React.FC> = {
   1: ProfessionalCV1,
   2: CreativeCV1,
@@ -32,49 +32,70 @@ const CVComponents: Record<number, React.FC> = {
   15: StudentCV3
 };
 
-export default function TemplateCard({ template }: { template: Template }) {
+interface TemplateCardProps {
+  template: Template;
+  onPreview: () => void;
+}
+
+export default function TemplateCard({ template, onPreview }: TemplateCardProps) {
   const CVComponent = CVComponents[template.id] || ProfessionalCV1;
+  const [showPreview, setShowPreview] = useState(false);
 
   return (
     <motion.div 
-      className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300"
+      className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-xl transition duration-300 relative"
       whileHover={{ 
         y: -10,
         boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)"
       }}
       layout
     >
+      {/* Template Preview Area */}
       <div className="relative h-64 bg-gray-100 overflow-hidden">
-        {/* Preview Toggle */}
-        <div className="absolute top-2 right-2 z-10 flex gap-1">
-          <button className="bg-white bg-opacity-80 px-2 py-1 rounded text-xs font-medium">
+        {/* Preview Toggle Buttons */}
+        <div className="absolute top-2 right-2 z-20 flex gap-1">
+          <button 
+            onClick={() => setShowPreview(false)}
+            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+              !showPreview ? 'bg-white text-gray-800' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+            }`}
+          >
             Image
           </button>
-          <button className="bg-blue-600 text-white px-2 py-1 rounded text-xs font-medium">
+          <button 
+            onClick={() => setShowPreview(true)}
+            className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+              showPreview ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
+            }`}
+          >
             Preview
           </button>
         </div>
-        
-        {/* CV Preview */}
-        <div className="absolute inset-0">
-          <CVComponent />
-        </div>
-        
-        {/* Image Overlay */}
-        <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-300">
-          <div className="relative h-full w-full">
-            <Image
-              src={template.image}
-              alt={`${template.name} template`}
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            />
+
+        {/* CV Preview (shown when showPreview is true) */}
+        {showPreview && (
+          <div className="absolute inset-0 z-10 bg-white p-2">
+            <CVComponent />
           </div>
-        </div>
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4">
+        )}
+
+        {/* Template Image (shown when showPreview is false) */}
+        {!showPreview && (
+          <div className="absolute inset-0">
+            <div className="relative h-full w-full">
+              <Image
+                src={template.image}
+                alt={`${template.name} template`}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              />
+            </div>
+          </div>
+        )}
+
+        {/* Gradient Overlay (always visible) */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-4 z-10">
           <div>
             <motion.h3 
               className="text-white text-xl font-semibold"
@@ -107,9 +128,10 @@ export default function TemplateCard({ template }: { template: Template }) {
           </div>
         </div>
       </div>
-      
+
+      {/* Template Info Section */}
       <div className="p-4">
-        <p className="text-gray-600 mb-4">{template.description}</p>
+        <p className="text-gray-600 mb-4 line-clamp-2">{template.description}</p>
         <div className="flex justify-between items-center">
           <motion.span 
             className="inline-block bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded"
@@ -117,22 +139,21 @@ export default function TemplateCard({ template }: { template: Template }) {
           >
             {template.category}
           </motion.span>
-          <Link href={`/builder?template=${template.id}`} passHref>
-            <motion.a
-              className="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center cursor-pointer"
-              whileHover={{ x: 5 }}
-              whileTap={{ scale: 0.95 }}
+          <motion.button
+            onClick={onPreview}
+            className="text-blue-600 hover:text-blue-800 font-medium text-sm flex items-center"
+            whileHover={{ x: 5 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Preview Template
+            <motion.span 
+              className="ml-1"
+              animate={{ x: [0, 5, 0] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
             >
-              Use Template 
-              <motion.span 
-                className="ml-1"
-                animate={{ x: [0, 5, 0] }}
-                transition={{ repeat: Infinity, duration: 1.5 }}
-              >
-                →
-              </motion.span>
-            </motion.a>
-          </Link>
+              →
+            </motion.span>
+          </motion.button>
         </div>
       </div>
     </motion.div>
