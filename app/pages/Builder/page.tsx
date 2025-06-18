@@ -2,12 +2,23 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { 
-  FaUser, FaBriefcase, FaGraduationCap, FaCode, 
-  FaLanguage, FaPalette, FaEye, FaFilePdf, 
-  FaSave, FaPlus, FaTrash, FaDownload, FaSpinner
+import {
+  FaUser,
+  FaBriefcase,
+  FaGraduationCap,
+  FaCode,
+  FaLanguage,
+  FaPalette,
+  FaEye,
+  FaFilePdf,
+  FaSave,
+  FaPlus,
+  FaTrash,
+  FaDownload,
+  FaSpinner,
 } from 'react-icons/fa';
 import { motion, AnimatePresence, Variants } from 'framer-motion'; // Import Variants type
+import Footer from '@/app/components/Footer/page';
 
 // Define TypeScript interfaces
 interface PersonalInfo {
@@ -56,64 +67,64 @@ interface Language {
 
 // Animation variants
 const fadeIn: Variants = {
-    hidden: { opacity: 0, y: 50 },
-    visible: { 
-      opacity: 1, 
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" }
+  hidden: { opacity: 0, y: 50 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: 'easeOut' },
+  },
+  exit: {
+    opacity: 0,
+    y: -20,
+    transition: { duration: 0.3, ease: 'easeIn' },
+  },
+};
+
+const slideIn: Variants = {
+  hidden: { opacity: 0, x: 50 },
+  visible: {
+    opacity: 1,
+    x: 0,
+    transition: { duration: 0.5, ease: 'easeOut' },
+  },
+};
+
+const popIn: Variants = {
+  hidden: { scale: 0.8, opacity: 0 },
+  visible: {
+    scale: 1,
+    opacity: 1,
+    transition: {
+      type: 'spring', // Use string literal
+      stiffness: 300,
+      damping: 20,
+      duration: 0.4,
     },
-    exit: { 
-      opacity: 0, 
-      y: -20,
-      transition: { duration: 0.3, ease: "easeIn" }
-    }
-  };
+  },
+  exit: {
+    scale: 0.8,
+    opacity: 0,
+    transition: { duration: 0.2 },
+  },
+};
 
-  const slideIn: Variants = {
-    hidden: { opacity: 0, x: 50 },
-    visible: { 
-      opacity: 1, 
-      x: 0,
-      transition: { duration: 0.5, ease: "easeOut" }
-    }
-  };
-
-  const popIn: Variants = {
-    hidden: { scale: 0.8, opacity: 0 },
-    visible: { 
-      scale: 1, 
-      opacity: 1,
-      transition: { 
-        type: "spring", // Use string literal
-        stiffness: 300, 
-        damping: 20,
-        duration: 0.4
-      }
+const itemAnimation: Variants = {
+  hidden: { opacity: 0, height: 0 },
+  visible: (i: number) => ({
+    opacity: 1,
+    height: 'auto',
+    transition: {
+      delay: i * 0.1,
+      duration: 0.3,
+      ease: 'easeOut',
     },
-    exit: { 
-      scale: 0.8, 
-      opacity: 0,
-      transition: { duration: 0.2 }
-    }
-  };
-
-  const itemAnimation: Variants = {
-    hidden: { opacity: 0, height: 0 },
-    visible: (i: number) => ({
-      opacity: 1,
-      height: "auto",
-      transition: {
-        delay: i * 0.1,
-        duration: 0.3,
-        ease: "easeOut"
-      }
-    }),
-    exit: { 
-      opacity: 0, 
-      height: 0,
-      transition: { duration: 0.2 }
-    }
-  };
+  }),
+  exit: {
+    opacity: 0,
+    height: 0,
+    transition: { duration: 0.2 },
+  },
+};
 
 export default function CVBuilder() {
   // State for form sections
@@ -127,33 +138,52 @@ export default function CVBuilder() {
     summary: '',
     profilePic: null,
   });
-  
+
   const [workExperience, setWorkExperience] = useState<WorkExperience[]>([
-    { id: 1, jobTitle: '', employer: '', city: '', startDate: '', endDate: '', description: '', current: false },
+    {
+      id: 1,
+      jobTitle: '',
+      employer: '',
+      city: '',
+      startDate: '',
+      endDate: '',
+      description: '',
+      current: false,
+    },
   ]);
-  
+
   const [education, setEducation] = useState<Education[]>([
-    { id: 1, school: '', degree: '', city: '', startDate: '', endDate: '', description: '' },
+    {
+      id: 1,
+      school: '',
+      degree: '',
+      city: '',
+      startDate: '',
+      endDate: '',
+      description: '',
+    },
   ]);
-  
+
   const [skills, setSkills] = useState<Skill[]>([
     { id: 1, name: '', level: 'Intermediate' },
   ]);
-  
+
   const [languages, setLanguages] = useState<Language[]>([
     { id: 1, name: '', proficiency: 'Fluent' },
   ]);
-  
+
   const [template, setTemplate] = useState<string>('professional');
   const [activeSection, setActiveSection] = useState<string>('personal');
   const [showPreview, setShowPreview] = useState<boolean>(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState<boolean>(false);
-  
+
   const cvPreviewRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   /// Handle input changes with proper typing
-  const handlePersonalChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handlePersonalChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setPersonalInfo({ ...personalInfo, [name]: value });
   };
@@ -164,7 +194,10 @@ export default function CVBuilder() {
       const reader = new FileReader();
       reader.onload = (event) => {
         if (event.target?.result) {
-          setPersonalInfo({ ...personalInfo, profilePic: event.target.result as string });
+          setPersonalInfo({
+            ...personalInfo,
+            profilePic: event.target.result as string,
+          });
         }
       };
       reader.readAsDataURL(file);
@@ -178,39 +211,53 @@ export default function CVBuilder() {
     }
   };
 
-  const handleWorkChange = (id: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleWorkChange = (
+    id: number,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value, type } = e.target;
     const target = e.target as HTMLInputElement;
-    
-    const updatedValue = type === 'checkbox' 
-      ? target.checked 
-      : value;
 
-    const updatedExperience = workExperience.map(exp => 
+    const updatedValue = type === 'checkbox' ? target.checked : value;
+
+    const updatedExperience = workExperience.map((exp) =>
       exp.id === id ? { ...exp, [name]: updatedValue } : exp
     );
     setWorkExperience(updatedExperience);
   };
 
-  const handleEducationChange = (id: number, e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleEducationChange = (
+    id: number,
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
-    const updatedEducation = education.map(edu => 
+    const updatedEducation = education.map((edu) =>
       edu.id === id ? { ...edu, [name]: value } : edu
     );
     setEducation(updatedEducation);
   };
 
-  const handleSkillChange = (id: number, e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleSkillChange = (
+    id: number,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    const updatedSkills = skills.map(skill => 
+    const updatedSkills = skills.map((skill) =>
       skill.id === id ? { ...skill, [name]: value } : skill
     );
     setSkills(updatedSkills);
   };
 
-  const handleLanguageChange = (id: number, e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleLanguageChange = (
+    id: number,
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
-    const updatedLanguages = languages.map(lang => 
+    const updatedLanguages = languages.map((lang) =>
       lang.id === id ? { ...lang, [name]: value } : lang
     );
     setLanguages(updatedLanguages);
@@ -220,70 +267,67 @@ export default function CVBuilder() {
   const addWorkExperience = () => {
     setWorkExperience([
       ...workExperience,
-      { 
-        id: Date.now(), 
-        jobTitle: '', 
-        employer: '', 
-        city: '', 
-        startDate: '', 
-        endDate: '', 
+      {
+        id: Date.now(),
+        jobTitle: '',
+        employer: '',
+        city: '',
+        startDate: '',
+        endDate: '',
         description: '',
-        current: false
-      }
+        current: false,
+      },
     ]);
   };
 
   const addEducation = () => {
     setEducation([
       ...education,
-      { 
-        id: Date.now(), 
-        school: '', 
-        degree: '', 
-        city: '', 
-        startDate: '', 
-        endDate: '', 
-        description: '' 
-      }
+      {
+        id: Date.now(),
+        school: '',
+        degree: '',
+        city: '',
+        startDate: '',
+        endDate: '',
+        description: '',
+      },
     ]);
   };
 
   const addSkill = () => {
-    setSkills([
-      ...skills,
-      { id: Date.now(), name: '', level: 'Intermediate' }
-    ]);
+    setSkills([...skills, { id: Date.now(), name: '', level: 'Intermediate' }]);
   };
 
   const addLanguage = () => {
     setLanguages([
       ...languages,
-      { id: Date.now(), name: '', proficiency: 'Fluent' }
+      { id: Date.now(), name: '', proficiency: 'Fluent' },
     ]);
   };
 
   // Remove entries
   const removeWorkExperience = (id: number) => {
     if (workExperience.length > 1) {
-      setWorkExperience(workExperience.filter(exp => exp.id !== id));
+      setWorkExperience(workExperience.filter((exp) => exp.id !== id));
     }
   };
 
   const removeEducation = (id: number) => {
     if (education.length > 1) {
-      setEducation(education.filter(edu => edu.id !== id));
+      setEducation(education.filter((edu) => edu.id !== id));
     }
   };
 
   const removeSkill = (id: number) => {
     if (skills.length > 1) {
-      setSkills(skills.filter(skill => skill.id !== id));
+      setSkills(skills.filter((skill) => skill.id !== id));
     }
   };
 
   const removeLanguage = (id: number) => {
     if (languages.length > 1) {
-      setLanguages(languages.filter(lang => lang.id !== id));
+      setLanguages(languages.filter((lang) => lang.id !== id));
     }
   };
 
@@ -295,10 +339,10 @@ export default function CVBuilder() {
       education,
       skills,
       languages,
-      template
+      template,
     };
     localStorage.setItem('cvData', JSON.stringify(cvData));
-    
+
     // Animation feedback
     const saveBtn = document.querySelector('.save-btn');
     if (saveBtn) {
@@ -312,13 +356,15 @@ export default function CVBuilder() {
   // Download PDF function
   const downloadPDF = async () => {
     if (!cvPreviewRef.current) return;
-    
+
     try {
       setIsGeneratingPDF(true);
-      
+
       // Create a clone of the preview element
-      const previewClone = cvPreviewRef.current.cloneNode(true) as HTMLDivElement;
-      
+      const previewClone = cvPreviewRef.current.cloneNode(
+        true
+      ) as HTMLDivElement;
+
       // Add clone to document
       previewClone.style.position = 'fixed';
       previewClone.style.top = '0';
@@ -326,25 +372,25 @@ export default function CVBuilder() {
       previewClone.style.zIndex = '-1000';
       previewClone.style.width = '210mm'; // A4 width
       document.body.appendChild(previewClone);
-      
+
       // Generate PDF
       const html2canvas = (await import('html2canvas')).default;
       const jsPDF = (await import('jspdf')).default;
-      
+
       const canvas = await html2canvas(previewClone, {
         scale: 2,
         logging: false,
         useCORS: true,
         backgroundColor: '#ffffff',
-      } as any );
-      
+      } as any);
+
       document.body.removeChild(previewClone);
-      
+
       const imgData = canvas.toDataURL('image/png', 1.0);
       const pdf = new jsPDF('p', 'mm', 'a4');
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-      
+
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`${personalInfo.fullName || 'my'}-cv.pdf`);
     } catch (error) {
@@ -376,39 +422,43 @@ export default function CVBuilder() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       {/* Header */}
-      <motion.header 
+      <motion.header
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
         className="bg-gradient-to-r from-indigo-600 to-purple-700 text-white py-5 shadow-lg"
       >
         <div className="container mx-auto px-4 flex flex-col md:flex-row justify-between items-center">
-          <motion.div 
+          <motion.div
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
             className="flex items-center mb-4 md:mb-0"
           >
-            <motion.div 
+            <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ type: "spring", delay: 0.3 }}
+              transition={{ type: 'spring', delay: 0.3 }}
               className="bg-white p-2 rounded-lg mr-3"
             >
               <FaFilePdf className="text-indigo-600 text-2xl" />
             </motion.div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-bold">Professional &amp; creative CV Builder</h1>
-              <p className="text-indigo-200 text-sm">Create your perfect resume in minutes</p>
+              <h1 className="text-2xl md:text-3xl font-bold">
+                Professional &amp; creative CV Builder
+              </h1>
+              <p className="text-indigo-200 text-sm">
+                Create your perfect resume in minutes
+              </p>
             </div>
           </motion.div>
-          <motion.div 
+          <motion.div
             initial={{ x: 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
             className="flex flex-wrap gap-3"
           >
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={saveProgress}
@@ -416,7 +466,7 @@ export default function CVBuilder() {
             >
               <FaSave /> Save Progress
             </motion.button>
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowPreview(!showPreview)}
@@ -424,14 +474,14 @@ export default function CVBuilder() {
             >
               <FaEye /> {showPreview ? 'Hide Preview' : 'Show Preview'}
             </motion.button>
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={downloadPDF}
               disabled={isGeneratingPDF}
               className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition ${
-                isGeneratingPDF 
-                  ? 'bg-gray-400 cursor-not-allowed' 
+                isGeneratingPDF
+                  ? 'bg-gray-400 cursor-not-allowed'
                   : 'bg-white text-indigo-600 hover:bg-gray-100'
               }`}
             >
@@ -450,7 +500,7 @@ export default function CVBuilder() {
       </motion.header>
 
       <div className="container mx-auto px-4 py-8">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4, duration: 0.5 }}
@@ -458,53 +508,77 @@ export default function CVBuilder() {
         >
           {/* Left Sidebar - Form Navigation */}
           <div className="lg:w-1/4">
-            <motion.div 
+            <motion.div
               initial={{ x: -50, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
               transition={{ delay: 0.5, duration: 0.5 }}
               className="bg-white rounded-xl shadow-lg p-6 sticky top-6"
             >
-              <h2 className="text-xl font-bold mb-6 text-gray-800 border-b pb-3">Build Your CV</h2>
-              
+              <h2 className="text-xl font-bold mb-6 text-gray-800 border-b pb-3">
+                Build Your CV
+              </h2>
+
               <div className="space-y-2">
-                {['personal', 'work', 'education', 'skills', 'languages', 'template'].map((section) => (
+                {[
+                  'personal',
+                  'work',
+                  'education',
+                  'skills',
+                  'languages',
+                  'template',
+                ].map((section) => (
                   <motion.button
                     key={section}
                     whileHover={{ x: 5 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setActiveSection(section)}
                     className={`w-full text-left px-4 py-3 rounded-lg transition flex items-center gap-3 ${
-                      activeSection === section 
-                        ? 'bg-indigo-50 text-indigo-700 font-medium border-l-4 border-indigo-600' 
+                      activeSection === section
+                        ? 'bg-indigo-50 text-indigo-700 font-medium border-l-4 border-indigo-600'
                         : 'hover:bg-gray-50'
                     }`}
                   >
-                    {section === 'personal' && <FaUser className="text-indigo-500" />}
-                    {section === 'work' && <FaBriefcase className="text-indigo-500" />}
-                    {section === 'education' && <FaGraduationCap className="text-indigo-500" />}
-                    {section === 'skills' && <FaCode className="text-indigo-500" />}
-                    {section === 'languages' && <FaLanguage className="text-indigo-500" />}
-                    {section === 'template' && <FaPalette className="text-indigo-500" />}
-                    {section.charAt(0).toUpperCase() + section.slice(1)} {section === 'work' ? 'Experience' : ''}
+                    {section === 'personal' && (
+                      <FaUser className="text-indigo-500" />
+                    )}
+                    {section === 'work' && (
+                      <FaBriefcase className="text-indigo-500" />
+                    )}
+                    {section === 'education' && (
+                      <FaGraduationCap className="text-indigo-500" />
+                    )}
+                    {section === 'skills' && (
+                      <FaCode className="text-indigo-500" />
+                    )}
+                    {section === 'languages' && (
+                      <FaLanguage className="text-indigo-500" />
+                    )}
+                    {section === 'template' && (
+                      <FaPalette className="text-indigo-500" />
+                    )}
+                    {section.charAt(0).toUpperCase() + section.slice(1)}{' '}
+                    {section === 'work' ? 'Experience' : ''}
                   </motion.button>
                 ))}
               </div>
-              
+
               <div className="mt-8 pt-6 border-t border-gray-200">
-                <h3 className="font-medium mb-3 text-gray-700">Resume Progress</h3>
+                <h3 className="font-medium mb-3 text-gray-700">
+                  Resume Progress
+                </h3>
                 <div className="w-full bg-gray-200 rounded-full h-2.5 mb-4">
-                  <motion.div 
-                    className="bg-indigo-600 h-2.5 rounded-full" 
+                  <motion.div
+                    className="bg-indigo-600 h-2.5 rounded-full"
                     initial={{ width: '0%' }}
-                    animate={{ 
-                      width: activeSection === 'template' ? '100%' : '80%' 
+                    animate={{
+                      width: activeSection === 'template' ? '100%' : '80%',
                     }}
-                    transition={{ duration: 0.8, ease: "easeOut" }}
+                    transition={{ duration: 0.8, ease: 'easeOut' }}
                   ></motion.div>
                 </div>
                 <p className="text-sm text-gray-600">
-                  {activeSection === 'template' 
-                    ? 'All sections completed!' 
+                  {activeSection === 'template'
+                    ? 'All sections completed!'
                     : 'Complete all sections for a professional resume'}
                 </p>
               </div>
@@ -524,18 +598,24 @@ export default function CVBuilder() {
                   exit="exit"
                   className="bg-white rounded-xl shadow-lg p-6 mb-8"
                 >
-                  <h2 className="text-2xl font-bold mb-6 text-gray-800">CV Preview</h2>
-                  
-                  <div 
+                  <h2 className="text-2xl font-bold mb-6 text-gray-800">
+                    CV Preview
+                  </h2>
+
+                  <div
                     ref={cvPreviewRef}
                     className="border border-gray-300 p-8 min-h-[800px] bg-white"
                     style={{ width: '210mm' }} // Set A4 width
                   >
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-8">
                       <div>
-                        <h1 className="text-3xl font-bold text-indigo-700">{personalInfo.fullName || 'Your Name'}</h1>
-                        <p className="text-xl text-indigo-500 mt-1">{personalInfo.jobTitle || 'Professional Title'}</p>
-                        
+                        <h1 className="text-3xl font-bold text-indigo-700">
+                          {personalInfo.fullName || 'Your Name'}
+                        </h1>
+                        <p className="text-xl text-indigo-500 mt-1">
+                          {personalInfo.jobTitle || 'Professional Title'}
+                        </p>
+
                         <div className="flex flex-wrap gap-x-6 gap-y-2 mt-4 text-sm">
                           {personalInfo.email && (
                             <div className="flex items-center">
@@ -565,149 +645,191 @@ export default function CVBuilder() {
                       </div>
                       {personalInfo.profilePic && (
                         <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-100 shadow-md">
-                          <img 
-                            src={personalInfo.profilePic} 
-                            alt="Profile" 
+                          <img
+                            src={personalInfo.profilePic}
+                            alt="Profile"
                             className="w-full h-full object-cover"
                           />
                         </div>
                       )}
                     </div>
-                    
+
                     {personalInfo.summary && (
                       <div className="mb-8">
-                        <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">Professional Summary</h2>
-                        <p className="text-gray-700 leading-relaxed">{personalInfo.summary}</p>
+                        <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">
+                          Professional Summary
+                        </h2>
+                        <p className="text-gray-700 leading-relaxed">
+                          {personalInfo.summary}
+                        </p>
                       </div>
                     )}
-                    
-                    {workExperience.some(exp => exp.jobTitle) && (
+
+                    {workExperience.some((exp) => exp.jobTitle) && (
                       <div className="mb-8">
-                        <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">Work Experience</h2>
-                        {workExperience.map((exp, index) => (
-                          exp.jobTitle && (
-                            <motion.div 
-                              key={index} 
-                              className="mb-6"
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: index * 0.1 }}
-                            >
-                              <div className="flex flex-col md:flex-row justify-between">
-                                <h3 className="font-bold text-lg text-gray-800">{exp.jobTitle}</h3>
-                                <div className="text-gray-600">
-                                  {exp.startDate} - {exp.current ? 'Present' : exp.endDate}
+                        <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">
+                          Work Experience
+                        </h2>
+                        {workExperience.map(
+                          (exp, index) =>
+                            exp.jobTitle && (
+                              <motion.div
+                                key={index}
+                                className="mb-6"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                              >
+                                <div className="flex flex-col md:flex-row justify-between">
+                                  <h3 className="font-bold text-lg text-gray-800">
+                                    {exp.jobTitle}
+                                  </h3>
+                                  <div className="text-gray-600">
+                                    {exp.startDate} -{' '}
+                                    {exp.current ? 'Present' : exp.endDate}
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="flex flex-col md:flex-row justify-between text-gray-700 mb-2">
-                                <div className="font-medium text-indigo-600">{exp.employer}</div>
-                                <div>{exp.city}</div>
-                              </div>
-                              <p className="text-gray-700 mt-2">{exp.description}</p>
-                            </motion.div>
-                          )
-                        ))}
+                                <div className="flex flex-col md:flex-row justify-between text-gray-700 mb-2">
+                                  <div className="font-medium text-indigo-600">
+                                    {exp.employer}
+                                  </div>
+                                  <div>{exp.city}</div>
+                                </div>
+                                <p className="text-gray-700 mt-2">
+                                  {exp.description}
+                                </p>
+                              </motion.div>
+                            )
+                        )}
                       </div>
                     )}
-                    
-                    {education.some(edu => edu.school) && (
+
+                    {education.some((edu) => edu.school) && (
                       <div className="mb-8">
-                        <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">Education</h2>
-                        {education.map((edu, index) => (
-                          edu.school && (
-                            <motion.div 
-                              key={index} 
-                              className="mb-4"
-                              initial={{ opacity: 0, y: 20 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ delay: index * 0.1 }}
-                            >
-                              <div className="flex flex-col md:flex-row justify-between">
-                                <h3 className="font-bold text-gray-800">{edu.school}</h3>
-                                <div className="text-gray-600">
-                                  {edu.startDate} - {edu.endDate}
+                        <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">
+                          Education
+                        </h2>
+                        {education.map(
+                          (edu, index) =>
+                            edu.school && (
+                              <motion.div
+                                key={index}
+                                className="mb-4"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
+                              >
+                                <div className="flex flex-col md:flex-row justify-between">
+                                  <h3 className="font-bold text-gray-800">
+                                    {edu.school}
+                                  </h3>
+                                  <div className="text-gray-600">
+                                    {edu.startDate} - {edu.endDate}
+                                  </div>
                                 </div>
-                              </div>
-                              <div className="flex flex-col md:flex-row justify-between text-gray-700">
-                                <div>{edu.degree}</div>
-                                <div>{edu.city}</div>
-                              </div>
-                              <p className="text-gray-700 mt-2">{edu.description}</p>
-                            </motion.div>
-                          )
-                        ))}
+                                <div className="flex flex-col md:flex-row justify-between text-gray-700">
+                                  <div>{edu.degree}</div>
+                                  <div>{edu.city}</div>
+                                </div>
+                                <p className="text-gray-700 mt-2">
+                                  {edu.description}
+                                </p>
+                              </motion.div>
+                            )
+                        )}
                       </div>
                     )}
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      {skills.some(skill => skill.name) && (
+                      {skills.some((skill) => skill.name) && (
                         <div>
-                          <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">Skills</h2>
+                          <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">
+                            Skills
+                          </h2>
                           <ul className="space-y-2">
-                            {skills.map((skill, index) => (
-                              skill.name && (
-                                <motion.li 
-                                  key={index} 
-                                  className="mb-2"
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: index * 0.1 }}
-                                >
-                                  <div className="flex justify-between">
-                                    <span className="font-medium">{skill.name}</span>
-                                    <span className="text-gray-600 bg-indigo-100 px-2 py-1 rounded text-sm">
-                                      {skill.level}
-                                    </span>
-                                  </div>
-                                  <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                                    <div 
-                                      className="bg-indigo-600 h-1.5 rounded-full" 
-                                      style={{ 
-                                        width: skill.level === 'Beginner' ? '30%' : 
-                                                skill.level === 'Intermediate' ? '60%' : 
-                                                skill.level === 'Advanced' ? '85%' : '100%' 
-                                      }}
-                                    ></div>
-                                  </div>
-                                </motion.li>
-                              )
-                            ))}
+                            {skills.map(
+                              (skill, index) =>
+                                skill.name && (
+                                  <motion.li
+                                    key={index}
+                                    className="mb-2"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                  >
+                                    <div className="flex justify-between">
+                                      <span className="font-medium">
+                                        {skill.name}
+                                      </span>
+                                      <span className="text-gray-600 bg-indigo-100 px-2 py-1 rounded text-sm">
+                                        {skill.level}
+                                      </span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                      <div
+                                        className="bg-indigo-600 h-1.5 rounded-full"
+                                        style={{
+                                          width:
+                                            skill.level === 'Beginner'
+                                              ? '30%'
+                                              : skill.level === 'Intermediate'
+                                              ? '60%'
+                                              : skill.level === 'Advanced'
+                                              ? '85%'
+                                              : '100%',
+                                        }}
+                                      ></div>
+                                    </div>
+                                  </motion.li>
+                                )
+                            )}
                           </ul>
                         </div>
                       )}
-                      
-                      {languages.some(lang => lang.name) && (
+
+                      {languages.some((lang) => lang.name) && (
                         <div>
-                          <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">Languages</h2>
+                          <h2 className="text-xl font-bold border-b border-gray-300 pb-2 mb-4 text-indigo-700">
+                            Languages
+                          </h2>
                           <ul className="space-y-2">
-                            {languages.map((lang, index) => (
-                              lang.name && (
-                                <motion.li 
-                                  key={index} 
-                                  className="mb-2"
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: index * 0.1 }}
-                                >
-                                  <div className="flex justify-between">
-                                    <span className="font-medium">{lang.name}</span>
-                                    <span className="text-gray-600 bg-indigo-100 px-2 py-1 rounded text-sm">
-                                      {lang.proficiency}
-                                    </span>
-                                  </div>
-                                  <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
-                                    <div 
-                                      className="bg-indigo-600 h-1.5 rounded-full" 
-                                      style={{ 
-                                        width: lang.proficiency === 'Basic' ? '30%' : 
-                                                lang.proficiency === 'Conversational' ? '60%' : 
-                                                lang.proficiency === 'Fluent' ? '85%' : '100%' 
-                                      }}
-                                    ></div>
-                                  </div>
-                                </motion.li>
-                              )
-                            ))}
+                            {languages.map(
+                              (lang, index) =>
+                                lang.name && (
+                                  <motion.li
+                                    key={index}
+                                    className="mb-2"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                  >
+                                    <div className="flex justify-between">
+                                      <span className="font-medium">
+                                        {lang.name}
+                                      </span>
+                                      <span className="text-gray-600 bg-indigo-100 px-2 py-1 rounded text-sm">
+                                        {lang.proficiency}
+                                      </span>
+                                    </div>
+                                    <div className="w-full bg-gray-200 rounded-full h-1.5 mt-1">
+                                      <div
+                                        className="bg-indigo-600 h-1.5 rounded-full"
+                                        style={{
+                                          width:
+                                            lang.proficiency === 'Basic'
+                                              ? '30%'
+                                              : lang.proficiency ===
+                                                'Conversational'
+                                              ? '60%'
+                                              : lang.proficiency === 'Fluent'
+                                              ? '85%'
+                                              : '100%',
+                                        }}
+                                      ></div>
+                                    </div>
+                                  </motion.li>
+                                )
+                            )}
                           </ul>
                         </div>
                       )}
@@ -731,13 +853,14 @@ export default function CVBuilder() {
                       className="bg-white rounded-xl shadow-lg p-6"
                     >
                       <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                        <FaUser className="text-indigo-600" /> Personal Information
+                        <FaUser className="text-indigo-600" /> Personal
+                        Information
                       </h2>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="md:col-span-2">
                           <div className="flex flex-col md:flex-row items-center gap-8">
                             <div className="flex flex-col items-center">
-                              <motion.div 
+                              <motion.div
                                 whileHover={{ scale: 1.05 }}
                                 className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-100 shadow mb-4"
                               >
@@ -784,12 +907,16 @@ export default function CVBuilder() {
                             </div>
                             <div className="flex-1 mt-4 md:mt-0">
                               <p className="text-sm text-gray-600 mb-4">
-                                Upload a professional photo (optional). Recommended size: 200x200 pixels. 
-                                Use a clear headshot with a neutral background for best results.
+                                Upload a professional photo (optional).
+                                Recommended size: 200x200 pixels. Use a clear
+                                headshot with a neutral background for best
+                                results.
                               </p>
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                  <label className="block text-gray-700 mb-2">Full Name</label>
+                                  <label className="block text-gray-700 mb-2">
+                                    Full Name
+                                  </label>
                                   <input
                                     type="text"
                                     name="fullName"
@@ -800,7 +927,9 @@ export default function CVBuilder() {
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-gray-700 mb-2">Job Title</label>
+                                  <label className="block text-gray-700 mb-2">
+                                    Job Title
+                                  </label>
                                   <input
                                     type="text"
                                     name="jobTitle"
@@ -814,9 +943,11 @@ export default function CVBuilder() {
                             </div>
                           </div>
                         </div>
-                        
+
                         <div>
-                          <label className="block text-gray-700 mb-2">Email</label>
+                          <label className="block text-gray-700 mb-2">
+                            Email
+                          </label>
                           <input
                             type="email"
                             name="email"
@@ -827,7 +958,9 @@ export default function CVBuilder() {
                           />
                         </div>
                         <div>
-                          <label className="block text-gray-700 mb-2">Phone</label>
+                          <label className="block text-gray-700 mb-2">
+                            Phone
+                          </label>
                           <input
                             type="tel"
                             name="phone"
@@ -838,7 +971,9 @@ export default function CVBuilder() {
                           />
                         </div>
                         <div>
-                          <label className="block text-gray-700 mb-2">Address</label>
+                          <label className="block text-gray-700 mb-2">
+                            Address
+                          </label>
                           <input
                             type="text"
                             name="address"
@@ -849,7 +984,9 @@ export default function CVBuilder() {
                           />
                         </div>
                         <div>
-                          <label className="block text-gray-700 mb-2">Website</label>
+                          <label className="block text-gray-700 mb-2">
+                            Website
+                          </label>
                           <input
                             type="url"
                             name="website"
@@ -860,7 +997,9 @@ export default function CVBuilder() {
                           />
                         </div>
                         <div className="md:col-span-2">
-                          <label className="block text-gray-700 mb-2">Professional Summary</label>
+                          <label className="block text-gray-700 mb-2">
+                            Professional Summary
+                          </label>
                           <textarea
                             name="summary"
                             value={personalInfo.summary}
@@ -882,9 +1021,10 @@ export default function CVBuilder() {
                     >
                       <div className="flex justify-between items-center mb-6">
                         <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                          <FaBriefcase className="text-indigo-600" /> Work Experience
+                          <FaBriefcase className="text-indigo-600" /> Work
+                          Experience
                         </h2>
-                        <motion.button 
+                        <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={addWorkExperience}
@@ -893,7 +1033,7 @@ export default function CVBuilder() {
                           <FaPlus /> Add Experience
                         </motion.button>
                       </div>
-                      
+
                       <AnimatePresence>
                         {workExperience.map((exp, index) => (
                           <motion.div
@@ -907,7 +1047,9 @@ export default function CVBuilder() {
                           >
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div>
-                                <label className="block text-gray-700 mb-2">Job Title</label>
+                                <label className="block text-gray-700 mb-2">
+                                  Job Title
+                                </label>
                                 <input
                                   type="text"
                                   name="jobTitle"
@@ -918,7 +1060,9 @@ export default function CVBuilder() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-gray-700 mb-2">Employer</label>
+                                <label className="block text-gray-700 mb-2">
+                                  Employer
+                                </label>
                                 <input
                                   type="text"
                                   name="employer"
@@ -929,7 +1073,9 @@ export default function CVBuilder() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-gray-700 mb-2">City</label>
+                                <label className="block text-gray-700 mb-2">
+                                  City
+                                </label>
                                 <input
                                   type="text"
                                   name="city"
@@ -940,22 +1086,30 @@ export default function CVBuilder() {
                                 />
                               </div>
                               <div>
-                                <label className="block text-gray-700 mb-2">Current Job</label>
+                                <label className="block text-gray-700 mb-2">
+                                  Current Job
+                                </label>
                                 <div className="mt-2">
                                   <label className="inline-flex items-center">
                                     <input
                                       type="checkbox"
                                       name="current"
                                       checked={exp.current}
-                                      onChange={(e) => handleWorkChange(exp.id, e)}
+                                      onChange={(e) =>
+                                        handleWorkChange(exp.id, e)
+                                      }
                                       className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                                     />
-                                    <span className="ml-2">I currently work here</span>
+                                    <span className="ml-2">
+                                      I currently work here
+                                    </span>
                                   </label>
                                 </div>
                               </div>
                               <div>
-                                <label className="block text-gray-700 mb-2">Start Date</label>
+                                <label className="block text-gray-700 mb-2">
+                                  Start Date
+                                </label>
                                 <input
                                   type="month"
                                   name="startDate"
@@ -966,18 +1120,24 @@ export default function CVBuilder() {
                               </div>
                               {!exp.current && (
                                 <div>
-                                  <label className="block text-gray-700 mb-2">End Date</label>
+                                  <label className="block text-gray-700 mb-2">
+                                    End Date
+                                  </label>
                                   <input
                                     type="month"
                                     name="endDate"
                                     value={exp.endDate}
-                                    onChange={(e) => handleWorkChange(exp.id, e)}
+                                    onChange={(e) =>
+                                      handleWorkChange(exp.id, e)
+                                    }
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                   />
                                 </div>
                               )}
                               <div className="md:col-span-2">
-                                <label className="block text-gray-700 mb-2">Description</label>
+                                <label className="block text-gray-700 mb-2">
+                                  Description
+                                </label>
                                 <textarea
                                   name="description"
                                   value={exp.description}
@@ -990,7 +1150,7 @@ export default function CVBuilder() {
                             </div>
                             {workExperience.length > 1 && (
                               <div className="mt-4 text-right">
-                                <motion.button 
+                                <motion.button
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
                                   onClick={() => removeWorkExperience(exp.id)}
@@ -1014,9 +1174,10 @@ export default function CVBuilder() {
                     >
                       <div className="flex justify-between items-center mb-6">
                         <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
-                          <FaGraduationCap className="text-indigo-600" /> Education
+                          <FaGraduationCap className="text-indigo-600" />{' '}
+                          Education
                         </h2>
-                        <motion.button 
+                        <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={addEducation}
@@ -1025,7 +1186,7 @@ export default function CVBuilder() {
                           <FaPlus /> Add Education
                         </motion.button>
                       </div>
-                      
+
                       <AnimatePresence>
                         {education.map((edu, index) => (
                           <motion.div
@@ -1039,64 +1200,88 @@ export default function CVBuilder() {
                           >
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                               <div>
-                                <label className="block text-gray-700 mb-2">School/University</label>
+                                <label className="block text-gray-700 mb-2">
+                                  School/University
+                                </label>
                                 <input
                                   type="text"
                                   name="school"
                                   value={edu.school}
-                                  onChange={(e) => handleEducationChange(edu.id, e)}
+                                  onChange={(e) =>
+                                    handleEducationChange(edu.id, e)
+                                  }
                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                   placeholder="Harvard University"
                                 />
                               </div>
                               <div>
-                                <label className="block text-gray-700 mb-2">Degree</label>
+                                <label className="block text-gray-700 mb-2">
+                                  Degree
+                                </label>
                                 <input
                                   type="text"
                                   name="degree"
                                   value={edu.degree}
-                                  onChange={(e) => handleEducationChange(edu.id, e)}
+                                  onChange={(e) =>
+                                    handleEducationChange(edu.id, e)
+                                  }
                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                   placeholder="Bachelor of Science in Computer Science"
                                 />
                               </div>
                               <div>
-                                <label className="block text-gray-700 mb-2">City</label>
+                                <label className="block text-gray-700 mb-2">
+                                  City
+                                </label>
                                 <input
                                   type="text"
                                   name="city"
                                   value={edu.city}
-                                  onChange={(e) => handleEducationChange(edu.id, e)}
+                                  onChange={(e) =>
+                                    handleEducationChange(edu.id, e)
+                                  }
                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                   placeholder="Cambridge, MA"
                                 />
                               </div>
                               <div>
-                                <label className="block text-gray-700 mb-2">Start Date</label>
+                                <label className="block text-gray-700 mb-2">
+                                  Start Date
+                                </label>
                                 <input
                                   type="month"
                                   name="startDate"
                                   value={edu.startDate}
-                                  onChange={(e) => handleEducationChange(edu.id, e)}
+                                  onChange={(e) =>
+                                    handleEducationChange(edu.id, e)
+                                  }
                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                               </div>
                               <div>
-                                <label className="block text-gray-700 mb-2">End Date</label>
+                                <label className="block text-gray-700 mb-2">
+                                  End Date
+                                </label>
                                 <input
                                   type="month"
                                   name="endDate"
                                   value={edu.endDate}
-                                  onChange={(e) => handleEducationChange(edu.id, e)}
+                                  onChange={(e) =>
+                                    handleEducationChange(edu.id, e)
+                                  }
                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                 />
                               </div>
                               <div className="md:col-span-2">
-                                <label className="block text-gray-700 mb-2">Description</label>
+                                <label className="block text-gray-700 mb-2">
+                                  Description
+                                </label>
                                 <textarea
                                   name="description"
                                   value={edu.description}
-                                  onChange={(e) => handleEducationChange(edu.id, e)}
+                                  onChange={(e) =>
+                                    handleEducationChange(edu.id, e)
+                                  }
                                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                   rows={3}
                                   placeholder="Relevant coursework, achievements, projects, etc."
@@ -1105,7 +1290,7 @@ export default function CVBuilder() {
                             </div>
                             {education.length > 1 && (
                               <div className="mt-4 text-right">
-                                <motion.button 
+                                <motion.button
                                   whileHover={{ scale: 1.05 }}
                                   whileTap={{ scale: 0.95 }}
                                   onClick={() => removeEducation(edu.id)}
@@ -1131,7 +1316,7 @@ export default function CVBuilder() {
                         <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
                           <FaCode className="text-indigo-600" /> Skills
                         </h2>
-                        <motion.button 
+                        <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={addSkill}
@@ -1140,7 +1325,7 @@ export default function CVBuilder() {
                           <FaPlus /> Add Skill
                         </motion.button>
                       </div>
-                      
+
                       <div className="space-y-6">
                         <AnimatePresence>
                           {skills.map((skill, index) => (
@@ -1155,33 +1340,43 @@ export default function CVBuilder() {
                             >
                               <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                  <label className="block text-gray-700 mb-2">Skill Name</label>
+                                  <label className="block text-gray-700 mb-2">
+                                    Skill Name
+                                  </label>
                                   <input
                                     type="text"
                                     name="name"
                                     value={skill.name}
-                                    onChange={(e) => handleSkillChange(skill.id, e)}
+                                    onChange={(e) =>
+                                      handleSkillChange(skill.id, e)
+                                    }
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     placeholder="JavaScript, Project Management, etc."
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-gray-700 mb-2">Proficiency Level</label>
+                                  <label className="block text-gray-700 mb-2">
+                                    Proficiency Level
+                                  </label>
                                   <select
                                     name="level"
                                     value={skill.level}
-                                    onChange={(e) => handleSkillChange(skill.id, e)}
+                                    onChange={(e) =>
+                                      handleSkillChange(skill.id, e)
+                                    }
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                   >
                                     <option value="Beginner">Beginner</option>
-                                    <option value="Intermediate">Intermediate</option>
+                                    <option value="Intermediate">
+                                      Intermediate
+                                    </option>
                                     <option value="Advanced">Advanced</option>
                                     <option value="Expert">Expert</option>
                                   </select>
                                 </div>
                               </div>
                               {skills.length > 1 && (
-                                <motion.button 
+                                <motion.button
                                   whileHover={{ scale: 1.1 }}
                                   whileTap={{ scale: 0.9 }}
                                   onClick={() => removeSkill(skill.id)}
@@ -1207,7 +1402,7 @@ export default function CVBuilder() {
                         <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-3">
                           <FaLanguage className="text-indigo-600" /> Languages
                         </h2>
-                        <motion.button 
+                        <motion.button
                           whileHover={{ scale: 1.05 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={addLanguage}
@@ -1216,7 +1411,7 @@ export default function CVBuilder() {
                           <FaPlus /> Add Language
                         </motion.button>
                       </div>
-                      
+
                       <div className="space-y-6">
                         <AnimatePresence>
                           {languages.map((lang, index) => (
@@ -1231,33 +1426,43 @@ export default function CVBuilder() {
                             >
                               <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                  <label className="block text-gray-700 mb-2">Language</label>
+                                  <label className="block text-gray-700 mb-2">
+                                    Language
+                                  </label>
                                   <input
                                     type="text"
                                     name="name"
                                     value={lang.name}
-                                    onChange={(e) => handleLanguageChange(lang.id, e)}
+                                    onChange={(e) =>
+                                      handleLanguageChange(lang.id, e)
+                                    }
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                     placeholder="English, Spanish, etc."
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-gray-700 mb-2">Proficiency</label>
+                                  <label className="block text-gray-700 mb-2">
+                                    Proficiency
+                                  </label>
                                   <select
                                     name="proficiency"
                                     value={lang.proficiency}
-                                    onChange={(e) => handleLanguageChange(lang.id, e)}
+                                    onChange={(e) =>
+                                      handleLanguageChange(lang.id, e)
+                                    }
                                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                   >
                                     <option value="Basic">Basic</option>
-                                    <option value="Conversational">Conversational</option>
+                                    <option value="Conversational">
+                                      Conversational
+                                    </option>
                                     <option value="Fluent">Fluent</option>
                                     <option value="Native">Native</option>
                                   </select>
                                 </div>
                               </div>
                               {languages.length > 1 && (
-                                <motion.button 
+                                <motion.button
                                   whileHover={{ scale: 1.1 }}
                                   whileTap={{ scale: 0.9 }}
                                   onClick={() => removeLanguage(lang.id)}
@@ -1282,17 +1487,18 @@ export default function CVBuilder() {
                       className="bg-white rounded-xl shadow-lg p-6"
                     >
                       <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-3">
-                        <FaPalette className="text-indigo-600" /> Template Selection
+                        <FaPalette className="text-indigo-600" /> Template
+                        Selection
                       </h2>
-                      
+
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <motion.div 
+                        <motion.div
                           whileHover={{ scale: 1.03 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setTemplate('professional')}
                           className={`border-2 rounded-xl overflow-hidden cursor-pointer transition-all ${
-                            template === 'professional' 
-                              ? 'border-indigo-600 shadow-lg scale-105' 
+                            template === 'professional'
+                              ? 'border-indigo-600 shadow-lg scale-105'
                               : 'border-gray-200 hover:border-indigo-400'
                           }`}
                         >
@@ -1304,21 +1510,27 @@ export default function CVBuilder() {
                             </div>
                           </div>
                           <div className="p-4">
-                            <h3 className="font-medium text-gray-800">Professional</h3>
-                            <p className="text-gray-600 text-sm mt-1">Clean and modern design</p>
+                            <h3 className="font-medium text-gray-800">
+                              Professional
+                            </h3>
+                            <p className="text-gray-600 text-sm mt-1">
+                              Clean and modern design
+                            </p>
                             {template === 'professional' && (
-                              <div className="mt-2 text-indigo-600 font-medium">Selected</div>
+                              <div className="mt-2 text-indigo-600 font-medium">
+                                Selected
+                              </div>
                             )}
                           </div>
                         </motion.div>
-                        
-                        <motion.div 
+
+                        <motion.div
                           whileHover={{ scale: 1.03 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setTemplate('creative')}
                           className={`border-2 rounded-xl overflow-hidden cursor-pointer transition-all ${
-                            template === 'creative' 
-                              ? 'border-indigo-600 shadow-lg scale-105' 
+                            template === 'creative'
+                              ? 'border-indigo-600 shadow-lg scale-105'
                               : 'border-gray-200 hover:border-indigo-400'
                           }`}
                         >
@@ -1330,21 +1542,27 @@ export default function CVBuilder() {
                             </div>
                           </div>
                           <div className="p-4">
-                            <h3 className="font-medium text-gray-800">Creative</h3>
-                            <p className="text-gray-600 text-sm mt-1">For designers and artists</p>
+                            <h3 className="font-medium text-gray-800">
+                              Creative
+                            </h3>
+                            <p className="text-gray-600 text-sm mt-1">
+                              For designers and artists
+                            </p>
                             {template === 'creative' && (
-                              <div className="mt-2 text-indigo-600 font-medium">Selected</div>
+                              <div className="mt-2 text-indigo-600 font-medium">
+                                Selected
+                              </div>
                             )}
                           </div>
                         </motion.div>
-                        
-                        <motion.div 
+
+                        <motion.div
                           whileHover={{ scale: 1.03 }}
                           whileTap={{ scale: 0.98 }}
                           onClick={() => setTemplate('minimalist')}
                           className={`border-2 rounded-xl overflow-hidden cursor-pointer transition-all ${
-                            template === 'minimalist' 
-                              ? 'border-indigo-600 shadow-lg scale-105' 
+                            template === 'minimalist'
+                              ? 'border-indigo-600 shadow-lg scale-105'
                               : 'border-gray-200 hover:border-indigo-400'
                           }`}
                         >
@@ -1356,10 +1574,16 @@ export default function CVBuilder() {
                             </div>
                           </div>
                           <div className="p-4">
-                            <h3 className="font-medium text-gray-800">Minimalist</h3>
-                            <p className="text-gray-600 text-sm mt-1">Simple and elegant</p>
+                            <h3 className="font-medium text-gray-800">
+                              Minimalist
+                            </h3>
+                            <p className="text-gray-600 text-sm mt-1">
+                              Simple and elegant
+                            </p>
                             {template === 'minimalist' && (
-                              <div className="mt-2 text-indigo-600 font-medium">Selected</div>
+                              <div className="mt-2 text-indigo-600 font-medium">
+                                Selected
+                              </div>
                             )}
                           </div>
                         </motion.div>
@@ -1372,79 +1596,7 @@ export default function CVBuilder() {
           </div>
         </motion.div>
       </div>
-      <motion.footer 
-        initial={{ opacity: 0, y: 50 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        viewport={{ once: true }}
-        className="bg-gray-800 text-gray-300 py-12"
-      >
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <h3 className="text-xl font-bold text-white mb-4">Creative CV Builder</h3>
-              <p className="mb-4">Create professional resumes that get you hired faster with our easy-to-use CV builder.</p>
-              <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-white transition">
-                  <span className="sr-only">Facebook</span>
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition">
-                  <span className="sr-only">Twitter</span>
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-400 hover:text-white transition">
-                  <span className="sr-only">LinkedIn</span>
-                  <svg className="h-6 w-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" clipRule="evenodd" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-4">Resources</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition">CV Templates</a></li>
-                <li><a href="#" className="hover:text-white transition">Cover Letter Examples</a></li>
-                <li><a href="#" className="hover:text-white transition">Job Search Tips</a></li>
-                <li><a href="#" className="hover:text-white transition">Career Advice</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-4">Company</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition">Careers</a></li>
-                <li><a href="#" className="hover:text-white transition">Contact</a></li>
-                <li><a href="#" className="hover:text-white transition">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white transition">Terms of Service</a></li>
-              </ul>
-            </div>
-            
-            <div>
-              <h3 className="text-lg font-semibold text-white mb-4">Popular Guides</h3>
-              <ul className="space-y-2">
-                <li><a href="#" className="hover:text-white transition">ATS-Friendly CV Guide</a></li>
-                <li><a href="#" className="hover:text-white transition">CV Format Guide</a></li>
-                <li><a href="#" className="hover:text-white transition">Entry-Level CV Tips</a></li>
-                <li><a href="#" className="hover:text-white transition">Career Change CV</a></li>
-                <li><a href="#" className="hover:text-white transition">Executive CV Writing</a></li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="border-t border-gray-700 mt-8 pt-8 text-sm text-center">
-            <p>© 2023 Creative CV Builder. All rights reserved.</p>
-          </div>
-        </div>
-      </motion.footer>
+      <Footer />
     </div>
   );
 }
