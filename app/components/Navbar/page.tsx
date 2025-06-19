@@ -16,7 +16,7 @@ const Navbar = () => {
     { name: 'Templates', href: '/pages/Templates' },
     { name: 'Builder', href: '/pages/Builder' },
     { name: 'Examples', href: '/pages/Example' },
-    { name: 'Tips & Guides', href: '/pages/Tips' },
+    { name: 'Guides', href: '/pages/Tips' },
   ];
 
   const secondaryNavItems = [
