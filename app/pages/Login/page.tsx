@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import { motion, Variants } from 'framer-motion'; // Import Variants type
-
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion'; 
 
 export default function LoginPage() {
   const [email, setEmail] = useState<string>('');

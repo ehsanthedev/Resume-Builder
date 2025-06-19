@@ -2,7 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { motion, AnimatePresence} from 'framer-motion';
+import type { Variants } from 'framer-motion'; 
 import TemplateCard from './templateCard';
 import { allTemplates, categories } from './templatesData';
 import PreviewModal from '../../components/PreviewModal';
@@ -224,7 +225,7 @@ export default function TemplatesPage() {
                 animate="visible"
                 variants={popIn}
                 exit="hidden"
-                key="no-results"
+                key={`no-results-${searchQuery}-${selectedCategory}`} 
               >
                 <h3 className="text-xl font-medium text-gray-600 mb-2">
                   No templates found

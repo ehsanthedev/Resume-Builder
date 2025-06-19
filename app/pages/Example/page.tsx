@@ -1,7 +1,8 @@
 // pages/index.tsx
 'use client';
 import { useState, useRef } from 'react';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { motion, AnimatePresence} from 'framer-motion';
+import type { Variants } from 'framer-motion'; 
 import Footer from '@/app/components/Footer/page';
 
 // Define TypeScript interfaces

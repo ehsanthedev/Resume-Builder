@@ -1,8 +1,9 @@
 'use client';
 
 import Head from 'next/head';
-import { motion, Variants } from 'framer-motion';
 import Footer from '@/app/components/Footer/page';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion'; 
 
 interface TeamMember {
   id: number;

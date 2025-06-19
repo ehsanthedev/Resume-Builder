@@ -2,7 +2,8 @@
 'use client';
 import Head from 'next/head';
 import Link from 'next/link';
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion'; 
 import {
   Check,
   Shield,

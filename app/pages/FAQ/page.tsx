@@ -1,7 +1,8 @@
 // app/pages/FAQ.tsx
 'use client';
 import Head from 'next/head';
-import { motion, Variants } from 'framer-motion';
+import { motion } from 'framer-motion';
+import type { Variants } from 'framer-motion'; 
 import { useState } from 'react';
 import {
   HelpCircle,

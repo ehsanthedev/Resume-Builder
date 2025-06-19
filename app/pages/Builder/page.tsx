@@ -17,7 +17,8 @@ import {
   FaDownload,
   FaSpinner,
 } from 'react-icons/fa';
-import { motion, AnimatePresence, Variants } from 'framer-motion'; // Import Variants type
+import { motion, AnimatePresence } from 'framer-motion'; // Import Variants type
+import type { Variants } from 'framer-motion'; 
 import Footer from '@/app/components/Footer/page';
 
 // Define TypeScript interfaces

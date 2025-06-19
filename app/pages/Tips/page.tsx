@@ -1,7 +1,8 @@
 "use client"
 import { useState } from 'react';
 import Head from 'next/head';
-import { motion, AnimatePresence, Variants } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import type { Variants } from 'framer-motion'; 
 
 // Define TypeScript interfaces
 interface Category {
